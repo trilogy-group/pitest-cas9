@@ -19,14 +19,14 @@ To target a Maven project, you must add Pitest maven plugin and configure Cas9 a
   <dependencies>
     <dependency>
       <groupId>org.pitest.cas9</groupId>
-      <artifactId>pitest-cas9</artifactId>
-      <version>${pitest-cas9}</version>
+      <artifactId>cas9-engine</artifactId>
+      <version>${pitest-cas9.version}</version>
     </dependency>
     <!-- to add if you use JUnit 5: -->
     <dependency>
-        <groupId>org.pitest</groupId>
-        <artifactId>pitest-junit5-plugin</artifactId>
-        <version>${pitest-junit5-plugin.version}</version>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-junit5-plugin</artifactId>
+      <version>${pitest-junit5-plugin.version}</version>
     </dependency>
   </dependencies>
 </plugin>
@@ -177,8 +177,8 @@ Using Cas9 as mutation engine with no further configuration (all defaults) is eq
   <dependencies>
     <dependency>
       <groupId>org.pitest.cas9</groupId>
-      <artifactId>pitest-cas9</artifactId>
-      <version>${pitest-cas9}</version>
+      <artifactId>cas9-engine</artifactId>
+      <version>${pitest-cas9.version}</version>
     </dependency>
   </dependencies>
 </plugin>
