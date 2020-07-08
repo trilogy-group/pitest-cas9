@@ -1,0 +1,83 @@
+package org.pitest.mutationtest.engine.cas9;
+
+import static java.util.stream.Collectors.toList;
+
+import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import lombok.NonNull;
+import lombok.Value;
+import lombok.val;
+import org.pitest.classinfo.ClassByteArraySource;
+import org.pitest.classinfo.ClassWriterFactory;
+import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsFactory;
+import org.pitest.mutationtest.build.intercept.ast.ClassAstSource;
+import org.pitest.mutationtest.engine.gregor.AbstractGregorMutater;
+import org.pitest.mutationtest.engine.gregor.GregorClassContext;
+import org.pitest.mutationtest.engine.gregor.GregorClassWriterFactory;
+import org.pitest.mutationtest.engine.gregor.GregorMutatingClassVisitor;
+import org.pitest.mutationtest.engine.gregor.MethodInfo;
+import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
+import org.pitest.mutationtest.engine.gregor.MutationContext;
+import org.pitest.reloc.asm.ClassVisitor;
+import org.pitest.reloc.asm.ClassWriter;
+import org.pitest.reloc.asm.MethodVisitor;
+
+public class AstParserMutater extends AbstractGregorMutater {
+
+  private final ClassWriterFactory writerFactory;
+
+  private final ClassAstSource classAstSource;
+
+  public AstParserMutater(Predicate<MethodInfo> filter, ClassByteArraySource byteSource,
+      Collection<MethodMutatorFactory> mutators) {
+    super(filter, byteSource, mutators);
+    writerFactory = new GregorClassWriterFactory(byteSource);
+    classAstSource = ClassAstSettingsFactory.getAstSource();
+  }
+
+  @Override
+  protected GregorClassContext createContext() {
+    return new GregorClassContext();
+  }
+
+  @Override
+  protected ClassWriter createWriter(String className) {
+    return writerFactory.createWriter(className);
+  }
+
+  @Override
+  protected GregorMutatingClassVisitor createMutatingVisitor(ClassVisitor visitor, GregorClassContext context,
+      Predicate<MethodInfo> filter, Collection<MethodMutatorFactory> mutators) {
+    UnaryOperator<MutationContext> toAstSource = ctx -> AstSourceMutationContext.of(ctx, context, classAstSource);
+    val decorated = mutators.stream()
+        .map(mutator -> (MethodMutatorFactory) MethodMutatorFactoryAstDecorator.of(mutator, toAstSource))
+        .collect(toList());
+    return new GregorMutatingClassVisitor(visitor, context, filter, decorated);
+  }
+
+  @Value(staticConstructor = "of")
+  private static class MethodMutatorFactoryAstDecorator implements MethodMutatorFactory {
+
+    @NonNull
+    MethodMutatorFactory factory;
+
+    @NonNull
+    UnaryOperator<MutationContext> decorate;
+
+    @Override
+    public MethodVisitor create(MutationContext context, MethodInfo methodInfo, MethodVisitor visitor) {
+      return factory.create(decorate.apply(context), methodInfo, visitor);
+    }
+
+    @Override
+    public String getGloballyUniqueId() {
+      return factory.getGloballyUniqueId();
+    }
+
+    @Override
+    public String getName() {
+      return factory.getName();
+    }
+  }
+}
