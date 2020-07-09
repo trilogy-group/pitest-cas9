@@ -1,0 +1,266 @@
+[
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        9
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 1,
+    "lineNumber": 7,
+    "description": "changed conditional boundary",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        9
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NegateConditionalsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 1,
+    "lineNumber": 7,
+    "description": "negated conditional",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        14
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.MathMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 2,
+    "lineNumber": 8,
+    "description": "Replaced XOR with AND",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        18
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 2,
+    "lineNumber": 7,
+    "description": "Changed increment from 1 to -1",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        24
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 3,
+    "lineNumber": 10,
+    "description": "removed call to org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::doNothing",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        28
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.InvertNegsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 4,
+    "lineNumber": 12,
+    "description": "removed negation",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(I)I"
+      },
+      "indexes": [
+        33
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.PrimitiveReturnsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 4,
+    "lineNumber": 13,
+    "description": "replaced int return with 0 for org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::doIt",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "testIt"
+        },
+        "methodDesc": "(Z)Z"
+      },
+      "indexes": [
+        4
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.BooleanTrueReturnValsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 0,
+    "lineNumber": 17,
+    "description": "replaced boolean return with true for org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::testIt",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "testIt"
+        },
+        "methodDesc": "(Z)Z"
+      },
+      "indexes": [
+        4
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.BooleanFalseReturnValsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 0,
+    "lineNumber": 17,
+    "description": "replaced boolean return with false for org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::testIt",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "echoIt"
+        },
+        "methodDesc": "(Ljava/lang/String;)Ljava/lang/String;"
+      },
+      "indexes": [
+        4
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.EmptyObjectReturnValsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 0,
+    "lineNumber": 21,
+    "description": "replaced return value with \"\" for org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::echoIt",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults"
+        },
+        "method": {
+          "name": "echoIt"
+        },
+        "methodDesc": "(Ljava/lang/Object;)Ljava/lang/Object;"
+      },
+      "indexes": [
+        4
+      ],
+      "mutator": "org.pitest.mutationtest.engine.gregor.mutators.NullReturnValsMutator"
+    },
+    "filename": "HasStatementsForAllNewDefaults.java",
+    "block": 0,
+    "lineNumber": 25,
+    "description": "replaced return value with null for org/pitest/mutationtest/engine/cas9/HasStatementsForAllNewDefaults::echoIt",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  }
+]
