@@ -6,7 +6,6 @@ import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -138,7 +137,7 @@ class AstParserMutaterTest {
         .findMutations(className)
         .stream()
         .map(MutationDetails::getMutator)
-        .map(mutator -> substringAfterLast(mutator, ".").replace("Mutator", ""))
+        .map(mutator -> getSimpleName(mutator).replace("Mutator", ""))
         .collect(toSet());
     // Assert
     assertThat(actual, containsInAnyOrder(expected));
@@ -337,7 +336,7 @@ class AstParserMutaterTest {
   private static Collection<String> getMutatorIds(Collection<MethodMutatorFactory> mutators) {
     return mutators.stream()
         .map(MethodMutatorFactory::getGloballyUniqueId)
-        .map(id -> substringAfterLast(id, ".").replace("Mutator", ""))
+        .map(id -> getSimpleName(id).replace("Mutator", ""))
         .collect(toSet());
   }
 
@@ -395,5 +394,16 @@ class AstParserMutaterTest {
         .collect(toSet());
     dependencies.add(BUILD_PROPERTIES.getProperty(CLASSES_DIRS_PROPERTY));
     return dependencies;
+  }
+
+  private static String getSimpleName(final String str) {
+    if (str == null || "".equals(str)) {
+      return str;
+    }
+    final int pos = str.lastIndexOf(".");
+    if (pos == -1 || pos == str.length() - 1) {
+      return "";
+    }
+    return str.substring(pos + 1);
   }
 }

@@ -1,7 +1,6 @@
 package org.pitest.mutationtest.build.intercept.ast;
 
 import static java.util.Collections.singleton;
-import static org.apache.commons.lang3.Functions.apply;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -19,6 +18,7 @@ import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Optional;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import org.pitest.classinfo.ClassName;
@@ -57,7 +57,7 @@ class ProjectBuildConfigAstSource implements ClassAstSource {
     val reflectionSolver = new ReflectionTypeSolver();
 
     val dependencyUrls = classPathElements.stream()
-        .map(elem -> apply(file -> file.toURI().toURL(), elem))
+        .map(ProjectBuildConfigAstSource::toUrl)
         .toArray(URL[]::new);
     val dependencySolver = new ClassLoaderTypeSolver(new URLClassLoader(dependencyUrls));
 
@@ -71,5 +71,10 @@ class ProjectBuildConfigAstSource implements ClassAstSource {
     val configuration = new ParserConfiguration().setSymbolResolver(symbolSolver);
 
     return new JavaParser(configuration);
+  }
+
+  @SneakyThrows
+  private static URL toUrl(File file) {
+    return file.toURI().toURL();
   }
 }

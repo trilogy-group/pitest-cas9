@@ -3,7 +3,6 @@ package org.pitest.mutationtest.build.intercept.ast;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.io.File;
 import java.util.Collection;
@@ -34,8 +33,9 @@ public class ClassAstSettingsFactory {
   }
 
   private ClassAstSource createAstSource(final ReportOptions options) {
-    val sourceDirs = defaultIfNull(options.getSourceDirs(), DEFAULT_SOURCE_DIRS);
-    val classpathElementsAsIs = defaultIfNull(options.getClassPathElements(), DEFAULT_CLASSPATH_ELEMENTS);
+    val sourceDirs = options.getSourceDirs() == null ? DEFAULT_SOURCE_DIRS : options.getSourceDirs();
+    val classpathElementsAsIs = options.getClassPathElements() == null
+        ? DEFAULT_CLASSPATH_ELEMENTS : options.getClassPathElements();
     val classpathElements = classpathElementsAsIs.stream()
         .map(File::new)
         .filter(File::exists)
