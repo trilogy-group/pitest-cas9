@@ -28,13 +28,18 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -48,7 +53,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.pitest.classinfo.ClassName;
 import org.pitest.classpath.ClassPathByteArraySource;
-import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsFactoryTestInitializer;
+import org.pitest.mutationtest.build.InterceptorParameters;
+import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptorFactory;
+import org.pitest.mutationtest.config.ReportOptions;
 import org.pitest.mutationtest.engine.MutationDetails;
 import org.pitest.mutationtest.engine.MutationIdentifier;
 import org.pitest.mutationtest.engine.gregor.ClassInfo;
@@ -72,6 +79,16 @@ class AstParserMutaterTest {
   public static final String TARGET_MUTATIONS = "/mutator/HasStatementsForAllNewDefaults.json";
 
   static final MutationDecompiler DECOMPILER = MutationDecompiler.of(TARGET_CLASS_NAME);
+
+  private static final String BUILD_PROPERTIES_FILE = "/build.properties";
+
+  private static final Properties BUILD_PROPERTIES = loadBuildProperties();
+
+  private static final String SOURCE_DIRS_PROPERTY = "sourceDirectory";
+
+  private static final String CLASSES_DIRS_PROPERTY = "outputDirectory";
+
+  private static final String CLASSPATH_FILE = "/classpath.txt";
 
   enum HasEnumConstructor {
 
@@ -248,16 +265,16 @@ class AstParserMutaterTest {
   }
 
   @Test
-  void shouldCreateAstMethodVisitorInClassWhenSourceIsInitialized() {
+  void shouldCreateAstMethodVisitorInClassWhenSourceIsInitialized() throws Exception {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
     val astInfoList = new ArrayList<MethodAstInfo>();
     val mutator = new AssertMethodAstInfoMutatorFactory(astInfoList::add);
     // Act
-    ClassAstSettingsFactoryTestInitializer.setUp();
+    enableAstParsing();
     val actual = new AstParserMutater(ALL_METHODS, byteSource, singleton(mutator))
         .findMutations(TARGET_CLASS_NAME);
-    ClassAstSettingsFactoryTestInitializer.tearDown();
+    disableAstParsing();
     // Assert
     val methodNames = astInfoList.stream()
         .map(MethodAstInfo::getMethodAst)
@@ -286,7 +303,7 @@ class AstParserMutaterTest {
   }
 
   @Test
-  void shouldGetMutationAndAstInClassWhenSourceIsInitialized() {
+  void shouldGetMutationAndAstInClassWhenSourceIsInitialized() throws Exception {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
     val mutator = spy(new MethodAstInfoIncrementsMutator());
@@ -297,10 +314,10 @@ class AstParserMutaterTest {
         .orElseThrow(AssertionError::new);
     val astInfoCaptor = ArgumentCaptor.forClass(MethodAstInfo.class);
     // Act
-    ClassAstSettingsFactoryTestInitializer.setUp();
+    enableAstParsing();
     val actual = new AstParserMutater(ALL_METHODS, byteSource, singleton(mutator))
         .getMutation(mutationId);
-    ClassAstSettingsFactoryTestInitializer.tearDown();
+    disableAstParsing();
     // Assert
     verify(mutator, atLeastOnce())
         .create(any(MutationContext.class), astInfoCaptor.capture(), any(MethodInfo.class), any(MethodVisitor.class));
@@ -345,5 +362,38 @@ class AstParserMutaterTest {
         .map(type -> type.setAnnotations(NodeList.nodeList()))
         .map(node -> node.toString(CODE_PRINT_CONFIG))
         .orElse("");
+  }
+
+  private static void enableAstParsing() throws IOException, URISyntaxException {
+    val options = new ReportOptions();
+    options.setSourceDirs(singleton(new File(BUILD_PROPERTIES.getProperty(SOURCE_DIRS_PROPERTY))));
+    options.setClassPathElements(loadClassPathElements());
+    val params = new InterceptorParameters(null, options, null);
+    val settingsFactory = new ClassAstSettingsInterceptorFactory();
+    settingsFactory.createInterceptor(params);
+  }
+
+  private static void disableAstParsing() {
+    val params = new InterceptorParameters(null, null, null);
+    val settingsFactory = new ClassAstSettingsInterceptorFactory();
+    settingsFactory.createInterceptor(params);
+  }
+
+  @SneakyThrows
+  private static Properties loadBuildProperties() {
+    val buildProps = new Properties();
+    try (InputStream is = AstParserMutaterTest.class.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
+      buildProps.load(is);
+    }
+    return buildProps;
+  }
+
+  private static Collection<String> loadClassPathElements() throws IOException, URISyntaxException {
+    val classPathFile = Paths.get(AstParserMutaterTest.class.getResource(CLASSPATH_FILE).toURI());
+    val dependencies = Files.readAllLines(classPathFile).stream()
+        .flatMap(line -> Stream.of(line.split(":")))
+        .collect(toSet());
+    dependencies.add(BUILD_PROPERTIES.getProperty(CLASSES_DIRS_PROPERTY));
+    return dependencies;
   }
 }
