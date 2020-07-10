@@ -21,6 +21,7 @@
     <module>cas9-parser</module>
     <module>cas9-mutators</module>
     <module>cas9-engine</module>
+    <module>cas9-example</module>
   </modules>
 
   <properties>
@@ -151,6 +152,10 @@
     <repository>
       <id>jcenter</id>
       <url>https://jcenter.bintray.com/</url>
+    </repository>
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2</url>
     </repository>
   </repositories>
 </project>
