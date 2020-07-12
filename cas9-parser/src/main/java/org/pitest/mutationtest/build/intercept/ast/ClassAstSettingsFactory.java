@@ -15,12 +15,12 @@ import org.pitest.mutationtest.config.ReportOptions;
 @UtilityClass
 public class ClassAstSettingsFactory {
 
-  private static final Collection<File> DEFAULT_SOURCE_DIRS =
+  private final Collection<File> DEFAULT_SOURCE_DIRS =
       unmodifiableCollection(singleton(new File("src/main/java")));
 
-  private static final Collection<String> DEFAULT_CLASSPATH_ELEMENTS = emptyList();
+  private final Collection<String> DEFAULT_CLASSPATH_ELEMENTS = emptyList();
 
-  private static final ClassAstSource EMPTY_AST_SOURCE = (name, file) -> Optional.empty();
+  private final ClassAstSource EMPTY_AST_SOURCE = (name, file) -> Optional.empty();
 
   private ClassAstSource classAstSource = EMPTY_AST_SOURCE;
 
