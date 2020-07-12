@@ -1,4 +1,4 @@
 org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptorFactory
 org.pitest.mutationtest.build.intercept.coverage.NoCoverageMutationFilterFactory
 org.pitest.mutationtest.build.intercept.limit.LimitNumberOfMutationsPerLineFilterFactory
-org.pitest.mutationtest.build.intercept.classrules.TargetClassRulesFilterFactory
+org.pitest.mutationtest.build.intercept.classrules.ClassRulesMutationFilterFactory
