@@ -1,7 +1,7 @@
 package org.pitest.mutationtest.engine.cas9;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,8 +22,8 @@ public class Cas9MutationEngine implements MutationEngine {
 
   Predicate<MethodInfo> filter;
 
-  public static MutationEngine of(MutationEngineConfiguration config) {
-    Set<MethodMutatorFactory> operators = new LinkedHashSet<>(config.mutators());
+  public static MutationEngine withConfig(MutationEngineConfiguration config) {
+    Set<MethodMutatorFactory> operators = new HashSet<>(config.mutators());
     return new Cas9MutationEngine(operators, config.methodFilter());
   }
 

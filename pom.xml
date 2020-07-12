@@ -17,6 +17,10 @@
     </developer>
   </developers>
 
+  <organization>
+    <name>GitHub</name>
+  </organization>
+
   <modules>
     <module>cas9-parser</module>
     <module>cas9-mutators</module>
@@ -31,7 +35,6 @@
     <!-- dependency versions -->
     <pitest.version>1.5.2</pitest.version>
     <lombok.version>1.18.12</lombok.version>
-    <commons-lang3.version>3.10</commons-lang3.version>
     <javaparser.version>3.16.1</javaparser.version>
     <!-- test dependency versions -->
     <junit.version>5.7.0-M1</junit.version>
@@ -50,9 +53,14 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${commons-lang3.version}</version>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest</artifactId>
+        <version>${pitest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-entry</artifactId>
+        <version>${pitest.version}</version>
       </dependency>
       <dependency>
         <groupId>com.github.javaparser</groupId>
@@ -69,6 +77,22 @@
         <artifactId>jd-core</artifactId>
         <version>${jd-core.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>${hamcrest.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -76,13 +100,11 @@
     <dependency>
       <groupId>org.pitest</groupId>
       <artifactId>pitest</artifactId>
-      <version>${pitest.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.pitest</groupId>
       <artifactId>pitest-entry</artifactId>
-      <version>${pitest.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -96,19 +118,16 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
-      <version>${hamcrest.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -131,6 +150,16 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${maven-dependency-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${versions-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -138,15 +167,30 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>${versions-maven-plugin.version}</version>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>cas9</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <repositories>
     <repository>

@@ -1,6 +1,6 @@
 package org.pitest.mutationtest.engine.cas9.config;
 
-import static org.pitest.mutationtest.engine.cas9.config.EngineArgumentsConfiguration.config;
+import static org.pitest.mutationtest.engine.cas9.config.Cas9EngineConfiguration.fromArguments;
 
 import org.pitest.mutationtest.EngineArguments;
 import org.pitest.mutationtest.MutationEngineFactory;
@@ -11,7 +11,7 @@ public class Cas9EngineFactory implements MutationEngineFactory {
 
   @Override
   public MutationEngine createEngine(EngineArguments arguments) {
-    return Cas9MutationEngine.of(config(arguments));
+    return Cas9MutationEngine.withConfig(fromArguments(arguments));
   }
 
   @Override
