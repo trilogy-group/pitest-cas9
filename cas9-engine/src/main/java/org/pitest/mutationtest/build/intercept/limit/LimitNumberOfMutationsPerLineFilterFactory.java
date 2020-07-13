@@ -30,7 +30,7 @@ public class LimitNumberOfMutationsPerLineFilterFactory implements MutationInter
 
   private static final Integer DEFAULT_LIMIT = 1;
 
-  private static final List<String> OPERATOR_PRIORITY = unmodifiableList(asList("LCR", "UOI", "ROR", "SBR", "AOR"));
+  private static final List<String> OPERATOR_PRIORITY = unmodifiableList(asList("ROR", "LCR", "SBR", "AOR", "UOI"));
 
   private static final List<String> ORDERED_MUTATORS = getMutatorsOrderedByPriority();
 
