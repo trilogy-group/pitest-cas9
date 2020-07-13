@@ -83,7 +83,7 @@ public class LimitNumberOfMutationsPerLineFilterFactory implements MutationInter
           .collect(groupingBy(MutationDetails::getLineNumber))
           .values().stream()
           .peek(details -> details.sort(byMutatorPriority))
-          .map(details -> details.get(0))
+          .flatMap(details -> details.stream().limit(maxMutationsPerLine))
           .collect(toList());
     }
 
