@@ -82,6 +82,7 @@
                 </goals>
                 <configuration>
                   <mutationEngine>gregor</mutationEngine>
+                  <reportsDirectory>target/pitest/gregor</reportsDirectory>
                 </configuration>
               </execution>
             </executions>
@@ -105,6 +106,7 @@
                 </goals>
                 <configuration>
                   <mutationEngine>cas9</mutationEngine>
+                  <reportsDirectory>target/pitest/cas9</reportsDirectory>
                 </configuration>
               </execution>
             </executions>
