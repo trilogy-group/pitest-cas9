@@ -22,6 +22,7 @@ import org.pitest.mutationtest.build.InterceptorType;
 import org.pitest.mutationtest.build.MutationInterceptor;
 import org.pitest.mutationtest.engine.Mutater;
 import org.pitest.mutationtest.engine.MutationDetails;
+import org.pitest.util.PitError;
 
 @RequiredArgsConstructor
 class ClassRulesMutationFilter implements MutationInterceptor {
@@ -77,7 +78,10 @@ class ClassRulesMutationFilter implements MutationInterceptor {
   private Predicate<MutationDetails> loadRulesFromFile(Path path) {
     try (Reader reader = Files.newBufferedReader(path)) {
       val rules = GSON.fromJson(reader, ClassRules.class);
+      rules.checkValid();
       return rules::validate;
+    } catch (InvalidClassRuleException e) {
+      throw new PitError("Error while loading file " + path, e);
     }
   }
 }

@@ -9,7 +9,9 @@ import org.pitest.plugin.FeatureParameter;
 
 public class ClassRulesMutationFilterFactory implements MutationInterceptorFactory {
 
-  private static final FeatureParameter ROOT_PARAM = FeatureParameter
+  static final String FEATURE_NAME = "FCINCL";
+
+  static final FeatureParameter ROOT_PARAM = FeatureParameter
       .named("root")
       .withDescription("Name of the root folder of class rule resources");
 
@@ -25,7 +27,7 @@ public class ClassRulesMutationFilterFactory implements MutationInterceptorFacto
 
   @Override
   public Feature provides() {
-    return Feature.named("FCINCL")
+    return Feature.named(FEATURE_NAME)
         .withOnByDefault(true)
         .withDescription("Filters out mutations based on class-specific inclusion rules")
         .withParameter(ROOT_PARAM);
@@ -35,5 +37,4 @@ public class ClassRulesMutationFilterFactory implements MutationInterceptorFacto
   public String description() {
     return "Class-level mutation inclusion rules";
   }
-
 }
