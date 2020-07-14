@@ -1,4 +1,4 @@
-package org.pitest.mutationtest.engine.cas9.mutators;
+package org.pitest.mutationtest.engine.cas9.mutators.lcr;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,12 +11,12 @@ import org.pitest.mutationtest.engine.gregor.MutationContext;
 import org.pitest.mutationtest.engine.gregor.ZeroOperandMutation;
 import org.pitest.reloc.asm.MethodVisitor;
 
-class LogicalConnectorReplacementMethodVisitor extends AbstractInsnMutator {
+class LCRMethodVisitor extends AbstractInsnMutator {
 
   @Getter
   private final MethodAstInfo astInfo;
 
-  public LogicalConnectorReplacementMethodVisitor(MethodMutatorFactory factory, MethodAstInfo astInfo,
+  public LCRMethodVisitor(MethodMutatorFactory factory, MethodAstInfo astInfo,
       MethodInfo methodInfo, MutationContext context, MethodVisitor delegateMethodVisitor) {
     super(factory, methodInfo, context, delegateMethodVisitor);
     this.astInfo = astInfo;

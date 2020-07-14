@@ -1,10 +1,10 @@
-package org.pitest.mutationtest.engine.cas9.config;
+package org.pitest.mutationtest.engine.cas9.mutators;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toSet;
-import static org.pitest.mutationtest.engine.cas9.mutators.LogicalConnectorReplacementMutator.LCR_MUTATOR;
-import static org.pitest.mutationtest.engine.cas9.mutators.StatementBlockRemovalMutator.SBR_MUTATOR;
+import static org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR_MUTATOR;
+import static org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator.SBR_MUTATOR;
 import static org.pitest.mutationtest.engine.gregor.config.Mutator.aor;
 import static org.pitest.mutationtest.engine.gregor.config.Mutator.ror;
 import static org.pitest.mutationtest.engine.gregor.config.Mutator.uoi;

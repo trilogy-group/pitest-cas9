@@ -1,4 +1,4 @@
-package org.pitest.mutationtest.engine.cas9.mutators;
+package org.pitest.mutationtest.engine.cas9.mutators.sbr;
 
 import org.pitest.mutationtest.engine.cas9.AstSupportMutatorFactory;
 import org.pitest.mutationtest.engine.cas9.MethodAstInfo;
@@ -6,13 +6,13 @@ import org.pitest.mutationtest.engine.gregor.MethodInfo;
 import org.pitest.mutationtest.engine.gregor.MutationContext;
 import org.pitest.reloc.asm.MethodVisitor;
 
-public enum LogicalConnectorReplacementMutator implements AstSupportMutatorFactory {
-  LCR_MUTATOR;
+public enum SBRMutator implements AstSupportMutatorFactory {
+  SBR_MUTATOR;
 
   @Override
   public MethodVisitor create(MutationContext context, MethodAstInfo astInfo, MethodInfo methodInfo,
       MethodVisitor visitor) {
-    return new LogicalConnectorReplacementMethodVisitor(this, astInfo, methodInfo, context, visitor);
+    return new SBRMethodVisitor(visitor, astInfo);
   }
 
   @Override
