@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import lombok.Value;
+import lombok.val;
+import org.pitest.classinfo.ClassName;
 
 @Value
 class CachingClassAstSource implements ClassAstSource {
@@ -22,11 +24,12 @@ class CachingClassAstSource implements ClassAstSource {
   ClassAstSource child;
 
   @Override
-  public Optional<ClassOrInterfaceDeclaration> getAst(String clazz, String fileName) {
-    if (!cache.containsKey(clazz)) {
-      child.getAst(clazz, fileName)
-          .ifPresent(type -> cache.put(clazz, type));
+  public Optional<ClassOrInterfaceDeclaration> getAst(ClassName className, String fileName) {
+    val key = className.asJavaName();
+    if (!cache.containsKey(key)) {
+      child.getAst(key, fileName)
+          .ifPresent(type -> cache.put(key, type));
     }
-    return Optional.ofNullable(cache.get(clazz));
+    return Optional.ofNullable(cache.get(key));
   }
 }

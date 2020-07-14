@@ -19,37 +19,35 @@ import java.util.Collection;
 import java.util.Optional;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.Value;
 import lombok.val;
 import org.pitest.classinfo.ClassName;
 import org.pitest.mutationtest.SourceLocator;
 import org.pitest.mutationtest.tooling.SmartSourceLocator;
 
-@Value
 class ProjectBuildConfigAstSource implements ClassAstSource {
 
-  SourceLocator locator;
+  private final JavaParser parser;
 
-  JavaParser parser;
+  private final SourceLocator locator;
 
-  static ProjectBuildConfigAstSource of(@NonNull final Collection<File> sourceDirs,
+  ProjectBuildConfigAstSource(@NonNull final Collection<File> sourceDirs,
       @NonNull final Collection<File> classPathElements) {
-    val parser = createParser(sourceDirs, classPathElements);
-    val locator = new SmartSourceLocator(sourceDirs);
-    return new ProjectBuildConfigAstSource(locator, parser);
+    this.parser = createParser(sourceDirs, classPathElements);
+    this.locator = new SmartSourceLocator(sourceDirs);
   }
 
   @Override
-  public Optional<ClassOrInterfaceDeclaration> getAst(String clazz, String fileName) {
-    val className = ClassName.fromString(clazz)
+  public Optional<ClassOrInterfaceDeclaration> getAst(ClassName className, String fileName) {
+    val internalName = className.asInternalName();
+    val simpleName = className
         .getNameWithoutPackage()
         .asJavaName();
 
-    return locator.locate(singleton(clazz), fileName)
+    return locator.locate(singleton(internalName), fileName)
         .map(parser::parse)
         .map(result -> result.getResult()
             .orElseThrow(() -> new ParseProblemException(result.getProblems())))
-        .flatMap(unit -> unit.getClassByName(className));
+        .flatMap(unit -> unit.getClassByName(simpleName));
   }
 
   private static JavaParser createParser(@NonNull Collection<File> sourceDirs,

@@ -10,7 +10,6 @@ import lombok.Value;
 import lombok.val;
 import org.pitest.classinfo.ClassByteArraySource;
 import org.pitest.classinfo.ClassWriterFactory;
-import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsFactory;
 import org.pitest.mutationtest.build.intercept.ast.ClassAstSource;
 import org.pitest.mutationtest.engine.gregor.AbstractGregorMutater;
 import org.pitest.mutationtest.engine.gregor.GregorClassContext;
@@ -33,7 +32,7 @@ public class AstGregorMutater extends AbstractGregorMutater {
       Collection<MethodMutatorFactory> mutators) {
     super(filter, byteSource, mutators);
     writerFactory = new GregorClassWriterFactory(byteSource);
-    classAstSource = ClassAstSettingsFactory.getAstSource();
+    classAstSource = ClassAstSource.getDefault();
   }
 
   @Override
