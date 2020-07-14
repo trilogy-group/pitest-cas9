@@ -6,6 +6,7 @@ import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -65,7 +66,7 @@ import org.pitest.mutationtest.engine.gregor.config.Mutator;
 import org.pitest.reloc.asm.MethodVisitor;
 
 @SuppressWarnings("unused")
-class AstParserMutaterTest {
+class AstGregorMutaterTest {
 
   static final Predicate<MethodInfo> ALL_METHODS = any -> true;
 
@@ -133,11 +134,11 @@ class AstParserMutaterTest {
     val className = ClassName.fromClass(classToMutate);
     val expected = expectedIds.toArray(new String[0]);
     // Act
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, mutators)
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, mutators)
         .findMutations(className)
         .stream()
         .map(MutationDetails::getMutator)
-        .map(mutator -> getSimpleName(mutator).replace("Mutator", ""))
+        .map(mutator -> substringAfterLast(mutator, ".").replace("Mutator", ""))
         .collect(toSet());
     // Assert
     assertThat(actual, containsInAnyOrder(expected));
@@ -172,9 +173,9 @@ class AstParserMutaterTest {
   void shouldFindNoMutationsInClassFromMutators(String classToMutate, Collection<MethodMutatorFactory> mutators) {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
-    val className = ClassName.fromString(AstParserMutaterTest.class.getName() + "." + classToMutate);
+    val className = ClassName.fromString(AstGregorMutaterTest.class.getName() + "." + classToMutate);
     // Act
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, mutators)
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, mutators)
         .findMutations(className);
     // Assert
     assertThat(actual, is(empty()));
@@ -208,7 +209,7 @@ class AstParserMutaterTest {
     val byteSource = new ClassPathByteArraySource();
     val expected = replaceCode(original, mutated);
     // Act
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, NEW_DEFAULTS)
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, NEW_DEFAULTS)
         .getMutation(mutationId);
     // Assert
     assertThat(DECOMPILER.decompile(actual), is(expected));
@@ -246,7 +247,7 @@ class AstParserMutaterTest {
     val contextCaptor = ArgumentCaptor.forClass(MutationContext.class);
     val methodInfoCaptor = ArgumentCaptor.forClass(MethodInfo.class);
     // Act
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, singleton(mutator))
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .findMutations(TARGET_CLASS_NAME);
     // Assert
     verify(mutator, atLeastOnce()).create(contextCaptor.capture(), methodInfoCaptor.capture(), any(MethodVisitor.class));
@@ -271,7 +272,7 @@ class AstParserMutaterTest {
     val mutator = new AssertMethodAstInfoMutatorFactory(astInfoList::add);
     // Act
     enableAstParsing();
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, singleton(mutator))
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .findMutations(TARGET_CLASS_NAME);
     disableAstParsing();
     // Assert
@@ -314,7 +315,7 @@ class AstParserMutaterTest {
     val astInfoCaptor = ArgumentCaptor.forClass(MethodAstInfo.class);
     // Act
     enableAstParsing();
-    val actual = new AstParserMutater(ALL_METHODS, byteSource, singleton(mutator))
+    val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .getMutation(mutationId);
     disableAstParsing();
     // Assert
@@ -336,13 +337,13 @@ class AstParserMutaterTest {
   private static Collection<String> getMutatorIds(Collection<MethodMutatorFactory> mutators) {
     return mutators.stream()
         .map(MethodMutatorFactory::getGloballyUniqueId)
-        .map(id -> getSimpleName(id).replace("Mutator", ""))
+        .map(id -> substringAfterLast(id, ".").replace("Mutator", ""))
         .collect(toSet());
   }
 
   @SneakyThrows
   private static Stream<MutationDetails> loadTargetDetails() {
-    val targetMutationsPath = Paths.get(AstParserMutaterTest.class.getResource(TARGET_MUTATIONS).toURI());
+    val targetMutationsPath = Paths.get(AstGregorMutaterTest.class.getResource(TARGET_MUTATIONS).toURI());
     try (Reader reader = new FileReader(targetMutationsPath.toFile())) {
       return Stream.of(new Gson().fromJson(reader, MutationDetails[].class));
     }
@@ -351,7 +352,7 @@ class AstParserMutaterTest {
   @SneakyThrows
   private static String replaceCode(String original, String mutated) {
     val targetSourceName = "/mutator/" + TARGET_CLASS_NAME.asInternalName() + ".java";
-    val targetSourcePath = Paths.get(AstParserMutaterTest.class.getResource(targetSourceName).toURI());
+    val targetSourcePath = Paths.get(AstGregorMutaterTest.class.getResource(targetSourceName).toURI());
     val modified = Files.readAllLines(targetSourcePath)
         .stream()
         .map(line -> line.replace(original, mutated))
@@ -381,29 +382,18 @@ class AstParserMutaterTest {
   @SneakyThrows
   private static Properties loadBuildProperties() {
     val buildProps = new Properties();
-    try (InputStream is = AstParserMutaterTest.class.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
+    try (InputStream is = AstGregorMutaterTest.class.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
       buildProps.load(is);
     }
     return buildProps;
   }
 
   private static Collection<String> loadClassPathElements() throws IOException, URISyntaxException {
-    val classPathFile = Paths.get(AstParserMutaterTest.class.getResource(CLASSPATH_FILE).toURI());
+    val classPathFile = Paths.get(AstGregorMutaterTest.class.getResource(CLASSPATH_FILE).toURI());
     val dependencies = Files.readAllLines(classPathFile).stream()
         .flatMap(line -> Stream.of(line.split(":")))
         .collect(toSet());
     dependencies.add(BUILD_PROPERTIES.getProperty(CLASSES_DIRS_PROPERTY));
     return dependencies;
-  }
-
-  private static String getSimpleName(final String str) {
-    if (str == null || "".equals(str)) {
-      return str;
-    }
-    final int pos = str.lastIndexOf(".");
-    if (pos == -1 || pos == str.length() - 1) {
-      return "";
-    }
-    return str.substring(pos + 1);
   }
 }

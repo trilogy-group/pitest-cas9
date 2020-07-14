@@ -5,22 +5,24 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.pitest.classinfo.ClassByteArraySource;
 import org.pitest.mutationtest.engine.Mutater;
 import org.pitest.mutationtest.engine.MutationEngine;
+import org.pitest.mutationtest.engine.cas9.config.Cas9Mutater;
 import org.pitest.mutationtest.engine.gregor.MethodInfo;
 import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
 import org.pitest.mutationtest.engine.gregor.MutationEngineConfiguration;
 
-@Value
+@RequiredArgsConstructor
 public class Cas9MutationEngine implements MutationEngine {
 
   public static final String ENGINE_NAME = "cas9";
 
-  Set<MethodMutatorFactory> operators;
+  private final Set<MethodMutatorFactory> operators;
 
-  Predicate<MethodInfo> filter;
+  private final Predicate<MethodInfo> filter;
 
   public static MutationEngine withConfig(MutationEngineConfiguration config) {
     Set<MethodMutatorFactory> operators = new HashSet<>(config.mutators());

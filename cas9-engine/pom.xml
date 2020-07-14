@@ -15,7 +15,7 @@
   <dependencies>
     <dependency>
       <groupId>org.pitest.cas9</groupId>
-      <artifactId>cas9-parser</artifactId>
+      <artifactId>cas9-arid</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

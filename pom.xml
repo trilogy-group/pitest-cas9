@@ -22,7 +22,8 @@
   </organization>
 
   <modules>
-    <module>cas9-parser</module>
+    <module>cas9-ast</module>
+    <module>cas9-arid</module>
     <module>cas9-mutators</module>
     <module>cas9-engine</module>
     <module>cas9-example</module>

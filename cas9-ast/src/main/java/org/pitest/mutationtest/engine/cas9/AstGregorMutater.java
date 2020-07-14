@@ -23,13 +23,13 @@ import org.pitest.reloc.asm.ClassVisitor;
 import org.pitest.reloc.asm.ClassWriter;
 import org.pitest.reloc.asm.MethodVisitor;
 
-public class AstParserMutater extends AbstractGregorMutater {
+public class AstGregorMutater extends AbstractGregorMutater {
 
   private final ClassWriterFactory writerFactory;
 
   private final ClassAstSource classAstSource;
 
-  public AstParserMutater(Predicate<MethodInfo> filter, ClassByteArraySource byteSource,
+  public AstGregorMutater(Predicate<MethodInfo> filter, ClassByteArraySource byteSource,
       Collection<MethodMutatorFactory> mutators) {
     super(filter, byteSource, mutators);
     writerFactory = new GregorClassWriterFactory(byteSource);
@@ -51,13 +51,13 @@ public class AstParserMutater extends AbstractGregorMutater {
       Predicate<MethodInfo> filter, Collection<MethodMutatorFactory> mutators) {
     UnaryOperator<MutationContext> toAstSource = ctx -> AstSourceMutationContext.of(ctx, context, classAstSource);
     val decorated = mutators.stream()
-        .map(mutator -> (MethodMutatorFactory) MethodMutatorFactoryAstDecorator.of(mutator, toAstSource))
+        .map(mutator -> (MethodMutatorFactory) MutationContextDecoratorFactory.of(mutator, toAstSource))
         .collect(toList());
     return new GregorMutatingClassVisitor(visitor, context, filter, decorated);
   }
 
   @Value(staticConstructor = "of")
-  private static class MethodMutatorFactoryAstDecorator implements MethodMutatorFactory {
+  private static class MutationContextDecoratorFactory implements MethodMutatorFactory {
 
     @NonNull
     MethodMutatorFactory factory;

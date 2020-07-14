@@ -9,8 +9,8 @@
     <relativePath>..</relativePath>
   </parent>
 
-  <artifactId>cas9-mutators</artifactId>
-  <name>Pitest Cas9 Mutators</name>
+  <artifactId>cas9-arid</artifactId>
+  <name>Pitest Cas9 Arid Nodes</name>
 
   <dependencies>
     <dependency>
