@@ -23,7 +23,9 @@
       <groupId>org.pitest.cas9</groupId>
       <artifactId>cas9-engine</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -43,6 +45,15 @@
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
         <version>${pitest-maven.version}</version>
+        <executions>
+          <execution>
+            <id>mutation-coverage</id>
+            <goals>
+              <goal>mutationCoverage</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
         <dependencies>
           <dependency>
             <groupId>org.pitest</groupId>
@@ -60,6 +71,7 @@
             <outputFormat>HTML</outputFormat>
             <outputFormat>XML</outputFormat>
           </outputFormats>
+          <timestampedReports>false</timestampedReports>
         </configuration>
       </plugin>
     </plugins>
@@ -75,11 +87,7 @@
             <artifactId>pitest-maven</artifactId>
             <executions>
               <execution>
-                <id>pitest-gregor</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>mutationCoverage</goal>
-                </goals>
+                <id>mutation-coverage</id>
                 <configuration>
                   <mutationEngine>gregor</mutationEngine>
                   <reportsDirectory>target/pitest/gregor</reportsDirectory>
@@ -99,11 +107,7 @@
             <artifactId>pitest-maven</artifactId>
             <executions>
               <execution>
-                <id>pitest-cas9</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>mutationCoverage</goal>
-                </goals>
+                <id>mutation-coverage</id>
                 <configuration>
                   <mutationEngine>cas9</mutationEngine>
                   <reportsDirectory>target/pitest/cas9</reportsDirectory>
