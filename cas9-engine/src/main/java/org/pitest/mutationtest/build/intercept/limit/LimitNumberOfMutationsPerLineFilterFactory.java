@@ -17,20 +17,22 @@ import org.pitest.mutationtest.build.MutationInterceptor;
 import org.pitest.mutationtest.build.MutationInterceptorFactory;
 import org.pitest.mutationtest.engine.Mutater;
 import org.pitest.mutationtest.engine.MutationDetails;
-import org.pitest.mutationtest.engine.cas9.config.Cas9Mutators;
+import org.pitest.mutationtest.engine.cas9.mutators.Cas9Mutators;
 import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
 import org.pitest.plugin.Feature;
 import org.pitest.plugin.FeatureParameter;
 
 public class LimitNumberOfMutationsPerLineFilterFactory implements MutationInterceptorFactory {
 
-  private static final FeatureParameter LIMIT_PARAM = FeatureParameter
+  static final String FEATURE_NAME = "LINELIMIT";
+
+  static final FeatureParameter LIMIT_PARAM = FeatureParameter
       .named("limit")
       .withDescription("Integer value for maximum mutations to create per line");
 
-  private static final Integer DEFAULT_LIMIT = 1;
+  static final Integer DEFAULT_LIMIT = 1;
 
-  private static final List<String> OPERATOR_PRIORITY = unmodifiableList(asList("ROR", "LCR", "SBR", "AOR", "UOI"));
+  static final List<String> OPERATOR_PRIORITY = unmodifiableList(asList("ROR", "LCR", "SBR", "AOR", "UOI"));
 
   private static final List<String> ORDERED_MUTATORS = getMutatorsOrderedByPriority();
 
@@ -42,7 +44,7 @@ public class LimitNumberOfMutationsPerLineFilterFactory implements MutationInter
 
   @Override
   public Feature provides() {
-    return Feature.named("LINELIMIT")
+    return Feature.named(FEATURE_NAME)
         .withOnByDefault(true)
         .withDescription("Limits the maximum number of mutations per line")
         .withParameter(LIMIT_PARAM);
