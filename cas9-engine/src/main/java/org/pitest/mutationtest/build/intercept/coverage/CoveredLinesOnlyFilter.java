@@ -1,8 +1,7 @@
 package org.pitest.mutationtest.build.intercept.coverage;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import lombok.val;
 import org.pitest.bytecode.analysis.ClassTree;
@@ -16,17 +15,16 @@ enum CoveredLinesOnlyFilter implements MutationInterceptor {
 
   FILTER;
 
-  private final List<CoverageDatabase> coverages = new ArrayList<>();
+  private CoverageDatabase coverage;
 
-  synchronized void addCoverage(CoverageDatabase coverage) {
-    coverages.add(coverage);
+  synchronized void setCoverage(CoverageDatabase coverage) {
+    this.coverage = coverage;
   }
 
   boolean hasCoverage(MutationDetails details) {
     val line = details.getClassLine();
-    return coverages.stream()
-        .map(coverage -> coverage.getTestsForClassLine(line))
-        .anyMatch(tests -> !tests.isEmpty());
+    val tests = coverage.getTestsForClassLine(line);
+    return tests != null && !tests.isEmpty();
   }
 
   @Override
@@ -39,6 +37,10 @@ enum CoveredLinesOnlyFilter implements MutationInterceptor {
 
   @Override
   public Collection<MutationDetails> intercept(Collection<MutationDetails> mutations, Mutater mutater) {
+    if (coverage == null) {
+      return Collections.emptyList();
+    }
+
     return mutations.stream()
         .filter(this::hasCoverage)
         .collect(Collectors.toList());

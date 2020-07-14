@@ -13,7 +13,7 @@ public class CoverageLookupTestPrioritiserFactory implements TestPrioritiserFact
 
   @Override
   public TestPrioritiser makeTestPrioritiser(Properties props, CodeSource code, CoverageDatabase coverage) {
-    FILTER.addCoverage(coverage);
+    FILTER.setCoverage(coverage);
     return new DefaultTestPrioritiser(coverage);
   }
 
