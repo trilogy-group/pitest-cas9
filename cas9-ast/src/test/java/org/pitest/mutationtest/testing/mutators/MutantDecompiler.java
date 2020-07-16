@@ -1,7 +1,7 @@
-package org.pitest.mutationtest.engine.cas9;
+package org.pitest.mutationtest.testing.mutators;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.val;
 import org.jd.core.v1.ClassFileToJavaSourceDecompiler;
@@ -9,20 +9,19 @@ import org.jd.core.v1.api.Decompiler;
 import org.jd.core.v1.api.loader.Loader;
 import org.jd.core.v1.api.loader.LoaderException;
 import org.jd.core.v1.api.printer.Printer;
-import org.pitest.classinfo.ClassName;
 import org.pitest.mutationtest.engine.Mutant;
 
-@Value(staticConstructor = "of")
-class MutationDecompiler {
+final class MutantDecompiler {
 
-  static final PrettyPrinterConfiguration CODE_PRINT_CONFIG = new PrettyPrinterConfiguration()
-      .setPrintComments(false)
-      .setIndentSize(2);
-  ClassName targetName;
+  private static final Decompiler DECOMPILER = new ClassFileToJavaSourceDecompiler();
 
-  Decompiler decompiler = new ClassFileToJavaSourceDecompiler();
+  private MutantDecompiler() {
+    throw new UnsupportedOperationException();
+  }
 
-  String decompile(Mutant mutant) throws Exception {
+  @SneakyThrows
+  static String decompile(@NonNull final Mutant mutant) {
+    val targetName = mutant.getDetails().getClassName();
     val loader = new Loader() {
       @Override
       public boolean canLoad(String internalName) {
@@ -36,11 +35,8 @@ class MutationDecompiler {
     };
     val builder = new StringBuilder();
     val printer = new FlatCodePrinter(builder);
-    decompiler.decompile(loader, printer, targetName.asJavaName());
-    return StaticJavaParser.parse(builder.toString())
-        .getClassByName(targetName.getNameWithoutPackage().asJavaName())
-        .map(node -> node.toString(CODE_PRINT_CONFIG))
-        .orElseThrow(IllegalArgumentException::new);
+    DECOMPILER.decompile(loader, printer, targetName.asJavaName());
+    return builder.toString();
   }
 
   @Value

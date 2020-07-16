@@ -18,5 +18,14 @@
       <artifactId>cas9-ast</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.pitest.cas9</groupId>
+      <artifactId>cas9-ast</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

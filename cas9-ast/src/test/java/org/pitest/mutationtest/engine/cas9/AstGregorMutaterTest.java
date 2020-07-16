@@ -3,7 +3,6 @@ package org.pitest.mutationtest.engine.cas9;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.substringAfterLast;
@@ -18,28 +17,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.pitest.mutationtest.engine.cas9.MutationDecompiler.CODE_PRINT_CONFIG;
 import static org.pitest.mutationtest.engine.gregor.mutators.ConditionalsBoundaryMutator.CONDITIONALS_BOUNDARY_MUTATOR;
 import static org.pitest.mutationtest.engine.gregor.mutators.IncrementsMutator.INCREMENTS_MUTATOR;
 import static org.pitest.mutationtest.engine.gregor.mutators.InvertNegsMutator.INVERT_NEGS_MUTATOR;
 import static org.pitest.mutationtest.engine.gregor.mutators.MathMutator.MATH_MUTATOR;
+import static org.pitest.mutationtest.testing.mutators.MutantMatcher.replaces;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.google.gson.Gson;
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -47,15 +38,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.pitest.classinfo.ClassName;
 import org.pitest.classpath.ClassPathByteArraySource;
-import org.pitest.mutationtest.build.InterceptorParameters;
-import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptorFactory;
-import org.pitest.mutationtest.config.ReportOptions;
 import org.pitest.mutationtest.engine.MutationDetails;
 import org.pitest.mutationtest.engine.MutationIdentifier;
 import org.pitest.mutationtest.engine.gregor.ClassInfo;
@@ -63,6 +52,7 @@ import org.pitest.mutationtest.engine.gregor.MethodInfo;
 import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
 import org.pitest.mutationtest.engine.gregor.MutationContext;
 import org.pitest.mutationtest.engine.gregor.config.Mutator;
+import org.pitest.mutationtest.testing.ast.ClassAstSourceExtension;
 import org.pitest.reloc.asm.MethodVisitor;
 
 @SuppressWarnings("unused")
@@ -77,18 +67,6 @@ class AstGregorMutaterTest {
   static final ClassName TARGET_CLASS_NAME = ClassName.fromClass(HasStatementsForAllNewDefaults.class);
 
   public static final String TARGET_MUTATIONS = "/mutator/HasStatementsForAllNewDefaults.json";
-
-  static final MutationDecompiler DECOMPILER = MutationDecompiler.of(TARGET_CLASS_NAME);
-
-  private static final String BUILD_PROPERTIES_FILE = "/build.properties";
-
-  private static final Properties BUILD_PROPERTIES = loadBuildProperties();
-
-  private static final String SOURCE_DIRS_PROPERTY = "sourceDirectory";
-
-  private static final String CLASSES_DIRS_PROPERTY = "outputDirectory";
-
-  private static final String CLASSPATH_FILE = "/classpath.txt";
 
   enum HasEnumConstructor {
 
@@ -203,16 +181,14 @@ class AstGregorMutaterTest {
 
   @ParameterizedTest(name = "{index}: ({1}) => ({2})")
   @MethodSource("getMutationFixture")
-  void shouldGetMutationInClassFromMutatorId(MutationIdentifier mutationId, String original, String mutated)
-      throws Exception {
+  void shouldGetMutationInClassFromMutatorId(MutationIdentifier mutationId, String original, String mutated) {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
-    val expected = replaceCode(original, mutated);
     // Act
     val actual = new AstGregorMutater(ALL_METHODS, byteSource, NEW_DEFAULTS)
         .getMutation(mutationId);
     // Assert
-    assertThat(DECOMPILER.decompile(actual), is(expected));
+    assertThat(actual, replaces(original, mutated));
   }
 
   @RequiredArgsConstructor
@@ -265,16 +241,15 @@ class AstGregorMutaterTest {
   }
 
   @Test
-  void shouldCreateAstMethodVisitorInClassWhenSourceIsInitialized() throws Exception {
+  @ExtendWith(ClassAstSourceExtension.class)
+  void shouldCreateAstMethodVisitorInClassWhenSourceIsInitialized() {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
     val astInfoList = new ArrayList<MethodAstInfo>();
     val mutator = new AssertMethodAstInfoMutatorFactory(astInfoList::add);
     // Act
-    enableAstParsing();
     val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .findMutations(TARGET_CLASS_NAME);
-    disableAstParsing();
     // Assert
     val methodNames = astInfoList.stream()
         .map(MethodAstInfo::getMethodAst)
@@ -303,7 +278,8 @@ class AstGregorMutaterTest {
   }
 
   @Test
-  void shouldGetMutationAndAstInClassWhenSourceIsInitialized() throws Exception {
+  @ExtendWith(ClassAstSourceExtension.class)
+  void shouldGetMutationAndAstInClassWhenSourceIsInitialized() {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
     val mutator = spy(new MethodAstInfoIncrementsMutator());
@@ -314,10 +290,8 @@ class AstGregorMutaterTest {
         .orElseThrow(AssertionError::new);
     val astInfoCaptor = ArgumentCaptor.forClass(MethodAstInfo.class);
     // Act
-    enableAstParsing();
     val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .getMutation(mutationId);
-    disableAstParsing();
     // Assert
     verify(mutator, atLeastOnce())
         .create(any(MutationContext.class), astInfoCaptor.capture(), any(MethodInfo.class), any(MethodVisitor.class));
@@ -327,7 +301,7 @@ class AstGregorMutaterTest {
         .collect(toSet());
     assertAll(
         () -> assertThat(methodNames, containsInAnyOrder("doIt", "testIt", "echoIt", "doNothing")),
-        () -> assertThat(DECOMPILER.decompile(actual), is(replaceCode("i++", "i--"))));
+        () -> assertThat(actual, replaces("i++", "i--")));
   }
 
   private static Collection<String> getMutatorIds(MethodMutatorFactory... mutators) {
@@ -347,53 +321,5 @@ class AstGregorMutaterTest {
     try (Reader reader = new FileReader(targetMutationsPath.toFile())) {
       return Stream.of(new Gson().fromJson(reader, MutationDetails[].class));
     }
-  }
-
-  @SneakyThrows
-  private static String replaceCode(String original, String mutated) {
-    val targetSourceName = "/mutator/" + TARGET_CLASS_NAME.asInternalName() + ".java";
-    val targetSourcePath = Paths.get(AstGregorMutaterTest.class.getResource(targetSourceName).toURI());
-    val modified = Files.readAllLines(targetSourcePath)
-        .stream()
-        .map(line -> line.replace(original, mutated))
-        .collect(joining(System.lineSeparator()));
-    return StaticJavaParser.parse(modified)
-        .getClassByName(TARGET_CLASS_NAME.getNameWithoutPackage().asJavaName())
-        .map(type -> type.setAnnotations(NodeList.nodeList()))
-        .map(node -> node.toString(CODE_PRINT_CONFIG))
-        .orElse("");
-  }
-
-  private static void enableAstParsing() throws IOException, URISyntaxException {
-    val options = new ReportOptions();
-    options.setSourceDirs(singleton(new File(BUILD_PROPERTIES.getProperty(SOURCE_DIRS_PROPERTY))));
-    options.setClassPathElements(loadClassPathElements());
-    val params = new InterceptorParameters(null, options, null);
-    val settingsFactory = new ClassAstSettingsInterceptorFactory();
-    settingsFactory.createInterceptor(params);
-  }
-
-  private static void disableAstParsing() {
-    val params = new InterceptorParameters(null, null, null);
-    val settingsFactory = new ClassAstSettingsInterceptorFactory();
-    settingsFactory.createInterceptor(params);
-  }
-
-  @SneakyThrows
-  private static Properties loadBuildProperties() {
-    val buildProps = new Properties();
-    try (InputStream is = AstGregorMutaterTest.class.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
-      buildProps.load(is);
-    }
-    return buildProps;
-  }
-
-  private static Collection<String> loadClassPathElements() throws IOException, URISyntaxException {
-    val classPathFile = Paths.get(AstGregorMutaterTest.class.getResource(CLASSPATH_FILE).toURI());
-    val dependencies = Files.readAllLines(classPathFile).stream()
-        .flatMap(line -> Stream.of(line.split(":")))
-        .collect(toSet());
-    dependencies.add(BUILD_PROPERTIES.getProperty(CLASSES_DIRS_PROPERTY));
-    return dependencies;
   }
 }
