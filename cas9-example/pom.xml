@@ -12,6 +12,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <lombok.version>1.18.12</lombok.version>
     <junit.version>5.7.0-M1</junit.version>
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <pitest-maven.version>1.5.2</pitest-maven.version>
@@ -51,7 +52,7 @@
             <goals>
               <goal>mutationCoverage</goal>
             </goals>
-            <phase>verify</phase>
+            <phase>pre-integration-test</phase>
           </execution>
         </executions>
         <dependencies>
@@ -72,6 +73,24 @@
             <outputFormat>XML</outputFormat>
           </outputFormats>
           <timestampedReports>false</timestampedReports>
+          <excludedTestClasses>
+            <excludedTestClass>org.pitest.mutationtest.engine.cas9.example.integration.*</excludedTestClass>
+          </excludedTestClasses>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skipITs>true</skipITs>
         </configuration>
       </plugin>
     </plugins>
@@ -85,35 +104,39 @@
           <plugin>
             <groupId>org.pitest</groupId>
             <artifactId>pitest-maven</artifactId>
-            <executions>
-              <execution>
-                <id>mutation-coverage</id>
-                <configuration>
-                  <mutationEngine>gregor</mutationEngine>
-                  <reportsDirectory>target/pitest/gregor</reportsDirectory>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <mutationEngine>gregor</mutationEngine>
+              <reportsDirectory>${project.build.directory}/pitest/gregor</reportsDirectory>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <test>GregorCoverageIT</test>
+              <skipITs>false</skipITs>
+              <systemPropertyVariables>
+                <pitest.report.file>${project.build.directory}/pitest/gregor/mutations.xml</pitest.report.file>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
     <profile>
       <id>cas9</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>org.pitest</groupId>
             <artifactId>pitest-maven</artifactId>
-            <executions>
-              <execution>
-                <id>mutation-coverage</id>
-                <configuration>
-                  <mutationEngine>cas9</mutationEngine>
-                  <reportsDirectory>target/pitest/cas9</reportsDirectory>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <mutationEngine>cas9</mutationEngine>
+              <reportsDirectory>${project.build.directory}/pitest/cas9</reportsDirectory>
+            </configuration>
             <dependencies>
               <dependency>
                 <groupId>org.pitest.cas9</groupId>
@@ -121,6 +144,17 @@
                 <version>${project.version}</version>
               </dependency>
             </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <test>Cas9CoverageIT</test>
+              <skipITs>false</skipITs>
+              <systemPropertyVariables>
+                <pitest.report.file>${project.build.directory}/pitest/cas9/mutations.xml</pitest.report.file>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>
