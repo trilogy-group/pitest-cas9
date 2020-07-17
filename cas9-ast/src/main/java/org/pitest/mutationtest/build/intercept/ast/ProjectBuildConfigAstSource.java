@@ -38,12 +38,12 @@ class ProjectBuildConfigAstSource implements ClassAstSource {
 
   @Override
   public Optional<ClassOrInterfaceDeclaration> getAst(ClassName className, String fileName) {
-    val internalName = className.asInternalName();
+    val fullName = className.asJavaName();
     val simpleName = className
         .getNameWithoutPackage()
         .asJavaName();
 
-    return locator.locate(singleton(internalName), fileName)
+    return locator.locate(singleton(fullName), fileName)
         .map(parser::parse)
         .map(result -> result.getResult()
             .orElseThrow(() -> new ParseProblemException(result.getProblems())))
