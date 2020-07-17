@@ -23,9 +23,7 @@ public interface AstSupportMutationInterceptor extends MutationInterceptor {
 
     BiFunction<Node, Integer, Boolean> containsLine = (node, line) ->
         node.getRange()
-            .map(nodeRange -> nodeRange.withBeginLine(line).withEndLine(line))
-            .flatMap(lineRange -> node.getRange()
-                .filter(nodeRange -> nodeRange.contains(lineRange)))
+            .filter(range -> range.begin.line == line)
             .isPresent();
     BiPredicate<Node, MutationDetails> matchesMutation = (node, mutation) ->
         containsLine.apply(node, mutation.getLineNumber());

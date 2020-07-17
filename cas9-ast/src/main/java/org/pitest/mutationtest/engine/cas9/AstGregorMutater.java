@@ -15,6 +15,7 @@ import org.pitest.mutationtest.engine.gregor.AbstractGregorMutater;
 import org.pitest.mutationtest.engine.gregor.GregorClassContext;
 import org.pitest.mutationtest.engine.gregor.GregorClassWriterFactory;
 import org.pitest.mutationtest.engine.gregor.GregorMutatingClassVisitor;
+import org.pitest.mutationtest.engine.gregor.LineTrackingMethodVisitor;
 import org.pitest.mutationtest.engine.gregor.MethodInfo;
 import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
 import org.pitest.mutationtest.engine.gregor.MutationContext;
@@ -49,10 +50,10 @@ public class AstGregorMutater extends AbstractGregorMutater {
   protected GregorMutatingClassVisitor createMutatingVisitor(ClassVisitor visitor, GregorClassContext context,
       Predicate<MethodInfo> filter, Collection<MethodMutatorFactory> mutators) {
     UnaryOperator<MutationContext> toAstSource = ctx -> AstSourceMutationContext.of(ctx, context, classAstSource);
-    val decorated = mutators.stream()
+    val decoratedMutators = mutators.stream()
         .map(mutator -> (MethodMutatorFactory) MutationContextDecoratorFactory.of(mutator, toAstSource))
         .collect(toList());
-    return new GregorMutatingClassVisitor(visitor, context, filter, decorated);
+    return new GregorMutatingClassVisitor(visitor, context, filter, decoratedMutators);
   }
 
   @Value(staticConstructor = "of")
@@ -66,7 +67,9 @@ public class AstGregorMutater extends AbstractGregorMutater {
 
     @Override
     public MethodVisitor create(MutationContext context, MethodInfo methodInfo, MethodVisitor visitor) {
-      return factory.create(decorate.apply(context), methodInfo, visitor);
+      val decoratedContext = decorate.apply(context);
+      val mutatorVisitor = factory.create(decoratedContext, methodInfo, visitor);
+      return new LineTrackingMethodVisitor(decoratedContext, mutatorVisitor);
     }
 
     @Override

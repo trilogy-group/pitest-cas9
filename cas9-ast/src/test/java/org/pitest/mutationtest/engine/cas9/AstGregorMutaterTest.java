@@ -197,8 +197,8 @@ class AstGregorMutaterTest {
     private final Consumer<MethodAstInfo> consume;
 
     @Override
-    public MethodVisitor create(MutationContext context, MethodAstInfo astInfo, MethodInfo methodInfo,
-        MethodVisitor visitor) {
+    public MethodVisitor create(MutationContext context, AstNodeTracker astTracker, MethodAstInfo astInfo,
+        MethodInfo methodInfo, MethodVisitor visitor) {
       consume.accept(astInfo);
       return visitor;
     }
@@ -261,8 +261,8 @@ class AstGregorMutaterTest {
   static class MethodAstInfoIncrementsMutator implements AstSupportMutatorFactory {
 
     @Override
-    public MethodVisitor create(MutationContext context, MethodAstInfo astInfo, MethodInfo methodInfo,
-        MethodVisitor visitor) {
+    public MethodVisitor create(MutationContext context, AstNodeTracker astTracker, MethodAstInfo astInfo,
+        MethodInfo methodInfo, MethodVisitor visitor) {
       return INCREMENTS_MUTATOR.create(context, methodInfo, visitor);
     }
 
@@ -293,8 +293,8 @@ class AstGregorMutaterTest {
     val actual = new AstGregorMutater(ALL_METHODS, byteSource, singleton(mutator))
         .getMutation(mutationId);
     // Assert
-    verify(mutator, atLeastOnce())
-        .create(any(MutationContext.class), astInfoCaptor.capture(), any(MethodInfo.class), any(MethodVisitor.class));
+    verify(mutator, atLeastOnce()).create(any(MutationContext.class), any(AstNodeTracker.class),
+        astInfoCaptor.capture(), any(MethodInfo.class), any(MethodVisitor.class));
     val methodNames = astInfoCaptor.getAllValues().stream()
         .map(MethodAstInfo::getMethodAst)
         .map(CallableDeclaration::getNameAsString)
