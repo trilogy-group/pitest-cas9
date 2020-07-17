@@ -1,0 +1,98 @@
+[
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/sbr/SBRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(II)V"
+      },
+      "indexes": [
+        8
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator"
+    },
+    "filename": "SBRMutationTarget.java",
+    "block": 1,
+    "lineNumber": 11,
+    "description": "removed block starting at line 11",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/sbr/SBRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(II)V"
+      },
+      "indexes": [
+        25
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator"
+    },
+    "filename": "SBRMutationTarget.java",
+    "block": 5,
+    "lineNumber": 15,
+    "description": "removed block starting at line 15",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/sbr/SBRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(II)V"
+      },
+      "indexes": [
+        42
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator"
+    },
+    "filename": "SBRMutationTarget.java",
+    "block": 11,
+    "lineNumber": 17,
+    "description": "removed block starting at line 17",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/sbr/SBRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(II)V"
+      },
+      "indexes": [
+        47
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator"
+    },
+    "filename": "SBRMutationTarget.java",
+    "block": 12,
+    "lineNumber": 18,
+    "description": "removed block starting at line 18",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  }
+]
