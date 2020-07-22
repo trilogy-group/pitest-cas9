@@ -3,11 +3,11 @@ package org.pitest.mutationtest.build.intercept.ast;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.stream.Collectors.toList;
 import static org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptor.INTERCEPTOR;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import lombok.val;
 import org.pitest.mutationtest.build.InterceptorParameters;
 import org.pitest.mutationtest.build.MutationInterceptor;
@@ -22,7 +22,7 @@ public class ClassAstSettingsInterceptorFactory implements MutationInterceptorFa
   private static final Collection<File> DEFAULT_SOURCE_DIRS =
       unmodifiableCollection(singleton(new File("src/main/java")));
 
-  private static final Collection<String> DEFAULT_CLASSPATH_ELEMENTS = emptyList();
+  private static final Collection<File> DEFAULT_CLASSPATH_ELEMENTS = emptyList();
 
   @Override
   public MutationInterceptor createInterceptor(InterceptorParameters params) {
@@ -43,14 +43,21 @@ public class ClassAstSettingsInterceptorFactory implements MutationInterceptorFa
     return "Source code AST provider plugin";
   }
 
+  public static void restoreClassAstSettings() {
+    val current = INTERCEPTOR.getAstSource().orElse(null);
+    if (!(current instanceof CachingClassAstSource)) {
+      ClassAstSettingsMinionArguments.restoreOptions()
+          .map(ClassAstSettingsInterceptorFactory::createAstSource)
+          .ifPresent(INTERCEPTOR::setAstSource);
+    }
+  }
+
   private static ClassAstSource createAstSource(final ReportOptions options) {
     val sourceDirs = options.getSourceDirs() == null ? DEFAULT_SOURCE_DIRS : options.getSourceDirs();
-    val classpathElementsAsIs = options.getClassPathElements() == null
-        ? DEFAULT_CLASSPATH_ELEMENTS : options.getClassPathElements();
-    val classpathElements = classpathElementsAsIs.stream()
-        .map(File::new)
-        .filter(File::exists)
-        .collect(Collectors.toList());
+    val classpathElements = options.getClassPathElements() == null
+        ? DEFAULT_CLASSPATH_ELEMENTS
+        : options.getClassPathElements().stream().map(File::new).collect(toList());
+    ClassAstSettingsMinionArguments.saveOptions(options);
     return new CachingClassAstSource(new ProjectBuildConfigAstSource(sourceDirs, classpathElements));
   }
 }

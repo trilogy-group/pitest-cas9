@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.pitest.classinfo.ClassByteArraySource;
+import org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptorFactory;
 import org.pitest.mutationtest.engine.Mutater;
 import org.pitest.mutationtest.engine.MutationEngine;
 import org.pitest.mutationtest.engine.cas9.config.Cas9Mutater;
@@ -26,6 +26,7 @@ public class Cas9MutationEngine implements MutationEngine {
 
   public static MutationEngine withConfig(MutationEngineConfiguration config) {
     Set<MethodMutatorFactory> operators = new HashSet<>(config.mutators());
+    ClassAstSettingsInterceptorFactory.restoreClassAstSettings();
     return new Cas9MutationEngine(operators, config.methodFilter());
   }
 

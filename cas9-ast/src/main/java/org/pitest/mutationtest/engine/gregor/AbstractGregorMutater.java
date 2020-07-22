@@ -59,7 +59,7 @@ public abstract class AbstractGregorMutater implements Mutater {
 
   @Override
   public Mutant getMutation(MutationIdentifier id) {
-    val className = id.getClassName().asJavaName();
+    val className = id.getClassName().asInternalName();
     val writer = createWriter(className);
     val mutatorForId = mutators.stream()
         .filter(mutator -> id.getMutator().equals(mutator.getGloballyUniqueId()))
