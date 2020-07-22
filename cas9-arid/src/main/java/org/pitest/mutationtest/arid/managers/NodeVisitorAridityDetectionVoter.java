@@ -1,5 +1,6 @@
 package org.pitest.mutationtest.arid.managers;
 
+import static com.github.javaparser.ast.Node.TreeTraversal.DIRECT_CHILDREN;
 import static org.pitest.functional.prelude.Prelude.not;
 import static org.pitest.mutationtest.arid.NodeAridity.ABSTAIN;
 import static org.pitest.mutationtest.arid.NodeAridity.ARID;
@@ -7,11 +8,13 @@ import static org.pitest.mutationtest.arid.NodeAridity.RELEVANT;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.pitest.mutationtest.arid.AridityDetectionVoter;
@@ -30,11 +33,14 @@ import org.pitest.mutationtest.arid.NodeAridity;
 class NodeVisitorAridityDetectionVoter extends VoidVisitorWithDefaults<Consumer<NodeAridity>>
     implements AridityDetectionVoter {
 
+  private static final Predicate<Node> IF_STATEMENT = Statement.class::isInstance;
+
   private final AridityDetectionVoter voter;
 
   @Override
   public NodeAridity vote(Node node) {
-    val expressions = node.findAll(Expression.class);
+    val expressions = new ArrayList<Node>();
+    node.walk(DIRECT_CHILDREN, IF_STATEMENT.and(expressions::add)::test);
     return expressions.isEmpty() ? voter.vote(node) : arid(expressions);
   }
 
@@ -54,7 +60,7 @@ class NodeVisitorAridityDetectionVoter extends VoidVisitorWithDefaults<Consumer<
     val hasRelevant = decisions.stream()
         .filter(not(ABSTAIN::equals))
         .anyMatch(RELEVANT::equals);
-    val defaultAridity = decisions.isEmpty() ? ABSTAIN : ARID;
+    val defaultAridity = decisions.contains(ARID) ? ARID : ABSTAIN;
     return hasRelevant ? RELEVANT : defaultAridity;
   }
 }
