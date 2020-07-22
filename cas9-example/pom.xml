@@ -90,9 +90,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <skipITs>true</skipITs>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -125,7 +122,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <test>Cas9CoverageIT</test>
-              <skipITs>false</skipITs>
               <systemPropertyVariables>
                 <pitest.report.file>${project.build.directory}/pitest/cas9/mutations.xml</pitest.report.file>
               </systemPropertyVariables>
@@ -167,7 +163,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <test>GregorCoverageIT</test>
-              <skipITs>false</skipITs>
               <systemPropertyVariables>
                 <pitest.report.file>${project.build.directory}/pitest/gregor/mutations.xml</pitest.report.file>
               </systemPropertyVariables>

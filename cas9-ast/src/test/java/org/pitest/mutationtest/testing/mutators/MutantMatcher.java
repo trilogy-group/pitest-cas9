@@ -6,10 +6,16 @@ import static java.util.stream.Collectors.joining;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.hamcrest.Description;
@@ -26,6 +32,7 @@ import org.pitest.mutationtest.engine.Mutant;
  *   Example: {@code assertThat(mutant, replaces("a > b", "a >= b"))}
  * </p>
  */
+@RequiredArgsConstructor
 public class MutantMatcher extends TypeSafeMatcher<Mutant> {
 
   public static final String SOURCE_DIR_PROPERTY = "cas9-test.sources";
@@ -34,16 +41,24 @@ public class MutantMatcher extends TypeSafeMatcher<Mutant> {
       .setPrintComments(false)
       .setIndentSize(2);
 
-  private final UnaryOperator<String> replacer;
+  private final Function<Mutant, String> operand;
 
   private Matcher<String> equalsMatcher;
 
-  public MutantMatcher(final String original, final String mutation) {
-    replacer = line -> line.replace(original, mutation);
+  public static Matcher<Mutant> replaces(String original, String mutation) {
+    UnaryOperator<String> replacer = line -> line.replace(original, mutation);
+    return new MutantMatcher(mutant -> replaceCode(mutant, replacer));
   }
 
-  public static Matcher<Mutant> replaces(String original, String mutation) {
-    return new MutantMatcher(original, mutation);
+  public static Matcher<Mutant> mutatesTo(@NonNull final Path path) {
+    return new MutantMatcher(mutant -> {
+      try {
+        return Files.lines(path)
+            .collect(joining(System.lineSeparator()));
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
   }
 
   @Override
@@ -57,7 +72,7 @@ public class MutantMatcher extends TypeSafeMatcher<Mutant> {
   @Override
   protected boolean matchesSafely(Mutant mutant) {
     val actual = decompile(mutant);
-    val expected = replaceCode(mutant, replacer);
+    val expected = operand.apply(mutant);
 
     equalsMatcher = IsEqual.equalTo(expected);
     return equalsMatcher.matches(actual);
@@ -85,7 +100,7 @@ public class MutantMatcher extends TypeSafeMatcher<Mutant> {
         .asInternalName();
     val filePath = Paths.get(getProperty(SOURCE_DIR_PROPERTY), packagePath, details.getFilename());
     val index = new LongAdder();
-    val modified = Files.readAllLines(filePath).stream()
+    val modified = Files.lines(filePath)
         .peek(line -> index.increment())
         .map(line -> index.intValue() == details.getLineNumber() ? replacer.apply(line) : line)
         .collect(joining(System.lineSeparator()));

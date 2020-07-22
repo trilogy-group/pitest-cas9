@@ -5,7 +5,8 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.pitest.mutationtest.testing.mutators.MutantMatcher.replaces;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.pitest.mutationtest.testing.mutators.MutantMatcher.mutatesTo;
 
 import com.google.gson.Gson;
 import java.io.FileReader;
@@ -15,7 +16,6 @@ import java.util.LinkedList;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,26 +55,43 @@ class SBRMutatorTest {
         .map(MutationDetails::getId)
         .collect(toCollection(LinkedList::new));
     assert details.size() == 4;
+    // removing blocks with nested blocks is not supported right now
+    details.remove(2);
     return Stream.of(
-        Arguments.of(details.pop(), "x", "y"),
-        Arguments.of(details.pop(), "x", "y"),
-        Arguments.of(details.pop(), "x", "y"),
-        Arguments.of(details.pop(), "x", "y")
+        Arguments.of(details.pop(), "block1"),
+        Arguments.of(details.pop(), "block2"),
+        Arguments.of(details.pop(), "block4")
     );
   }
 
-  @Disabled
   @ParameterizedTest(name = "{index}: ({1}) => ({2})")
   @MethodSource("getMutationFixture")
-  void shouldGetMutationInClassFromMutatorId(MutationIdentifier mutationId, String original, String mutated) {
+  void shouldGetMutationInClassFromMutatorId(MutationIdentifier mutationId, String folder) throws Exception {
     // Arrange
     val byteSource = new ClassPathByteArraySource();
     val mutators = singleton((MethodMutatorFactory) SBRMutator.SBR_MUTATOR);
+    val expectedUrl = SBRMutatorTest.class.getResource("/sbr/" + folder + "/SBRMutationTarget.java");
+    val expectedFile = Paths.get(expectedUrl.toURI());
     // Act
     val actual = new AstGregorMutater(any -> true, byteSource, mutators)
         .getMutation(mutationId);
     // Assert
-    assertThat(actual, replaces(original, mutated));
+    assertThat(actual, mutatesTo(expectedFile));
+  }
+
+  @Test
+  void getMutationSadlyDoesNotSupportRemovingBlocksWithChildren() throws Exception  {
+    // Arrange
+    val byteSource = new ClassPathByteArraySource();
+    val mutators = singleton((MethodMutatorFactory) SBRMutator.SBR_MUTATOR);
+    val mutationId = loadTargetDetails()
+        .skip(2)
+        .findFirst()
+        .map(MutationDetails::getId)
+        .orElseThrow(AssertionError::new);
+    val mutater = new AstGregorMutater(any -> true, byteSource, mutators);
+    // Act & Assert
+    assertThrows(NullPointerException.class, () -> mutater.getMutation(mutationId));
   }
 
   @SneakyThrows

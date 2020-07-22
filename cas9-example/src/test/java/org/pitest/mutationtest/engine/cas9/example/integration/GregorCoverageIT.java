@@ -15,10 +15,10 @@ public class GregorCoverageIT {
     final Map<String, Map<String, Long>> coverage = Mutations.loadFromXml(file);
     assertAll(
         () -> assertEquals(4, coverage.get("AOR").get("KILLED")),
-        () -> assertEquals(24, coverage.get("ROR").get("KILLED")),
-        () -> assertEquals(16, coverage.get("ROR").get("SURVIVED")),
-        () -> assertEquals(27, coverage.get("UOI").get("KILLED")),
-        () -> assertEquals(29, coverage.get("UOI").get("SURVIVED")),
-        () -> assertEquals(4, coverage.get("UOI").get("NO_COVERAGE")));
+        () -> assertEquals(37, coverage.get("ROR").get("KILLED")),
+        () -> assertEquals(23, coverage.get("ROR").get("SURVIVED")),
+        () -> assertEquals(39, coverage.get("UOI").get("KILLED")),
+        () -> assertEquals(53, coverage.get("UOI").get("SURVIVED")),
+        () -> assertEquals(8, coverage.get("UOI").get("NO_COVERAGE")));
   }
 }

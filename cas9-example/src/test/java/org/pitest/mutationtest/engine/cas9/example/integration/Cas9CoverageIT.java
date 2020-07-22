@@ -15,8 +15,8 @@ class Cas9CoverageIT {
     final Map<String, Map<String, Long>> coverage = Mutations.loadFromXml(file);
     assertAll(
         () -> assertEquals(1, coverage.get("AOR").get("KILLED")),
-        () -> assertEquals(2, coverage.get("ROR").get("KILLED")),
-        () -> assertEquals(1, coverage.get("ROR").get("SURVIVED")),
-        () -> assertEquals(1, coverage.get("UOI").get("SURVIVED")));
+        () -> assertEquals(4, coverage.get("ROR").get("KILLED")),
+        () -> assertEquals(3, coverage.get("ROR").get("SURVIVED")),
+        () -> assertEquals(3, coverage.get("UOI").get("SURVIVED")));
   }
 }
