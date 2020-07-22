@@ -32,7 +32,7 @@ import org.pitest.mutationtest.testing.ast.ClassAstSourceExtension;
 @ExtendWith(ClassAstSourceExtension.class)
 class SBRMutatorTest {
 
-  public static final String TARGET_MUTATIONS = "/sbr/SBRMutationTarget.json";
+  static final String TARGET_MUTATIONS = "/sbr/SBRMutationTarget.json";
 
   @Test
   void shouldFindMutationsForSbrOperator() {
@@ -64,7 +64,7 @@ class SBRMutatorTest {
     );
   }
 
-  @ParameterizedTest(name = "{index}: ({1}) => ({2})")
+  @ParameterizedTest(name = "{index}: remove {1}")
   @MethodSource("getMutationFixture")
   void shouldGetMutationInClassFromMutatorId(MutationIdentifier mutationId, String folder) throws Exception {
     // Arrange
