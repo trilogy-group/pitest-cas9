@@ -3,7 +3,7 @@ package org.pitest.mutationtest.engine.cas9.mutators;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toSet;
-import static org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR_MUTATOR;
+import static org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.lcr;
 import static org.pitest.mutationtest.engine.cas9.mutators.sbr.SBRMutator.SBR_MUTATOR;
 import static org.pitest.mutationtest.engine.gregor.config.Mutator.aor;
 import static org.pitest.mutationtest.engine.gregor.config.Mutator.ror;
@@ -44,7 +44,7 @@ public class Cas9Mutators {
 
   private Map<String, Collection<MethodMutatorFactory>> getMutatorMap() {
     val mutatorByName = new HashMap<String, Collection<MethodMutatorFactory>>();
-    mutatorByName.put("LCR", singleton(LCR_MUTATOR));
+    mutatorByName.put("LCR", lcr());
     mutatorByName.put("UOI", uoi());
     mutatorByName.put("ROR", ror());
     mutatorByName.put("SBR", singleton(SBR_MUTATOR));

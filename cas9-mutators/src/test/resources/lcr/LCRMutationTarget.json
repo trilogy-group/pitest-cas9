@@ -1,0 +1,338 @@
+[
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        12
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 2,
+    "lineNumber": 9,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        12
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 2,
+    "lineNumber": 9,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        14
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 3,
+    "lineNumber": 9,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        14
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 3,
+    "lineNumber": 9,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        30
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 7,
+    "lineNumber": 10,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        30
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 7,
+    "lineNumber": 10,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        42
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 10,
+    "lineNumber": 11,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        42
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 10,
+    "lineNumber": 11,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        58
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 14,
+    "lineNumber": 12,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        58
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 14,
+    "lineNumber": 12,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        60
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 15,
+    "lineNumber": 12,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        60
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 15,
+    "lineNumber": 12,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        62
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR1_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 16,
+    "lineNumber": 12,
+    "description": "replace logical connector with single operand",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  },
+  {
+    "id": {
+      "location": {
+        "clazz": {
+          "name": "org/pitest/mutationtest/engine/cas9/mutators/lcr/LCRMutationTarget"
+        },
+        "method": {
+          "name": "doIt"
+        },
+        "methodDesc": "(ZZ)V"
+      },
+      "indexes": [
+        62
+      ],
+      "mutator": "org.pitest.mutationtest.engine.cas9.mutators.lcr.LCRMutator.LCR2_MUTATOR"
+    },
+    "filename": "LCRMutationTarget.java",
+    "block": 16,
+    "lineNumber": 12,
+    "description": "replace logical connector with false",
+    "testsInOrder": [],
+    "isInFinallyBlock": false,
+    "poison": "NORMAL"
+  }
+]
