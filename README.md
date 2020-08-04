@@ -19,14 +19,14 @@ To target a Maven project, you must add Pitest maven plugin and configure Cas9 a
   <dependencies>
     <dependency>
       <groupId>org.pitest.cas9</groupId>
-      <artifactId>pitest-cas9</artifactId>
-      <version>${pitest-cas9}</version>
+      <artifactId>cas9-engine</artifactId>
+      <version>${pitest-cas9.version}</version>
     </dependency>
     <!-- to add if you use JUnit 5: -->
     <dependency>
-        <groupId>org.pitest</groupId>
-        <artifactId>pitest-junit5-plugin</artifactId>
-        <version>${pitest-junit5-plugin.version}</version>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-junit5-plugin</artifactId>
+      <version>${pitest-junit5-plugin.version}</version>
     </dependency>
   </dependencies>
 </plugin>
@@ -43,7 +43,7 @@ When used as the mutation engine, Cas9 actives all its feature by default.
 * `AST`: Parses the source code of the target class as an AST object.
 * `LINELIMIT`: Limits the maximum number of mutations per line.
 * `FCINCL`: Filters out mutations based on class-specific inclusion rules.
-* `FCCOVL`: Filters out mutations in lines not covered ny any unit test.
+* `FCCOVL`: Filters out mutations in lines not covered by any unit test.
 * `FSARID`: Filters out mutations based on predefined rules for _arid nodes_ detection.
 * `FEARID`: Filters out mutations based on custom _expert rules_ for _arid nodes_ detection.
 
@@ -177,8 +177,8 @@ Using Cas9 as mutation engine with no further configuration (all defaults) is eq
   <dependencies>
     <dependency>
       <groupId>org.pitest.cas9</groupId>
-      <artifactId>pitest-cas9</artifactId>
-      <version>${pitest-cas9}</version>
+      <artifactId>cas9-engine</artifactId>
+      <version>${pitest-cas9.version}</version>
     </dependency>
   </dependencies>
 </plugin>
