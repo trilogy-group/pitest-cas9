@@ -17,6 +17,8 @@ public abstract class AbstractAridNodeMutationFilterFactory implements MutationI
 
   private static final FeatureSetting EMPTY_FEATURE = new FeatureSetting("EMPTY", DEACTIVATE, emptyMap());
 
+  private static final String AST_FEATURE_NAME = ClassAstSettingsInterceptorFactory.FEATURE_NAME;
+
   private static MutationInterceptor classAstInterceptor;
 
   @Override
@@ -31,12 +33,10 @@ public abstract class AbstractAridNodeMutationFilterFactory implements MutationI
 
   private static synchronized void ensureAstReady(InterceptorParameters params) {
     if (classAstInterceptor == null) {
-      val hasAstFeature = new FeatureParser()
-          .parseFeatures(params.data().getFeatures())
-          .stream()
-          .filter(setting -> ClassAstSettingsInterceptorFactory.FEATURE_NAME.equals(setting.feature()))
-          .map(FeatureSetting::status)
-          .allMatch(status -> status == ACTIVATE);
+      val features = params.data().getFeatures();
+      val hasAstFeature = features != null && !features.isEmpty() && new FeatureParser()
+          .parseFeatures(features).stream()
+          .anyMatch(setting -> AST_FEATURE_NAME.equals(setting.feature()) && setting.status() == ACTIVATE);
       if (!hasAstFeature) {
         classAstInterceptor = new ClassAstSettingsInterceptorFactory().createInterceptor(params);
       }
