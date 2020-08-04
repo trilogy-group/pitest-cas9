@@ -1,6 +1,8 @@
 package org.pitest.mutationtest.arid.managers;
 
 import static java.util.stream.Collectors.toList;
+import static org.pitest.mutationtest.arid.NodeAridity.ABSTAIN;
+import static org.pitest.mutationtest.arid.NodeAridity.ARID;
 
 import com.github.javaparser.ast.DataKey;
 import com.github.javaparser.ast.Node;
@@ -35,16 +37,17 @@ abstract class AbstractAridityDetectionManager implements AridityDetectionManage
   public boolean decide(@NonNull MutationDetails details) {
     val node = mapper.apply(details.getId());
     if (node == null) {
-      return defaultAridity(details) == NodeAridity.ARID;
+      return defaultAridity(details) == ARID;
     }
     if (node.containsData(NODE_ARIDITY_KEY)) {
-      return node.getData(NODE_ARIDITY_KEY) == NodeAridity.ARID;
+      return node.getData(NODE_ARIDITY_KEY) == ARID;
     }
     val decisions = voters.stream()
         .map(voter -> voter.vote(node))
-        .peek(decision -> node.setData(NODE_ARIDITY_KEY, decision))
-        .filter(decision -> decision != NodeAridity.ABSTAIN);
-    return decide(decisions);
+        .filter(decision -> decision != ABSTAIN);
+    val aridity = decide(decisions) ? ARID : ABSTAIN;
+    node.setData(NODE_ARIDITY_KEY, aridity);
+    return aridity == ARID;
   }
 
   protected abstract boolean decide(Stream<NodeAridity> votes);

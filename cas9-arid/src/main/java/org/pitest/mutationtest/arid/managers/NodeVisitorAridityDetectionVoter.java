@@ -1,7 +1,7 @@
 package org.pitest.mutationtest.arid.managers;
 
 import static com.github.javaparser.ast.Node.TreeTraversal.DIRECT_CHILDREN;
-import static org.pitest.functional.prelude.Prelude.not;
+import static java.util.Collections.singleton;
 import static org.pitest.mutationtest.arid.NodeAridity.ABSTAIN;
 import static org.pitest.mutationtest.arid.NodeAridity.ARID;
 import static org.pitest.mutationtest.arid.NodeAridity.RELEVANT;
@@ -13,6 +13,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ class NodeVisitorAridityDetectionVoter extends VoidVisitorWithDefaults<Consumer<
     implements AridityDetectionVoter {
 
   private static final Predicate<Node> IS_STATEMENT = Statement.class::isInstance;
+
+  private static final Set<NodeAridity> ARID_ONLY = singleton(ARID);
 
   private final AridityDetectionVoter voter;
 
@@ -57,10 +60,8 @@ class NodeVisitorAridityDetectionVoter extends VoidVisitorWithDefaults<Consumer<
   private NodeAridity arid(Collection<? extends Node> nodes) {
     val decisions = new HashSet<NodeAridity>();
     nodes.forEach(node -> node.accept(this, decisions::add));
-    val hasRelevant = decisions.stream()
-        .filter(not(ABSTAIN::equals))
-        .anyMatch(RELEVANT::equals);
-    val defaultAridity = decisions.contains(ARID) ? ARID : ABSTAIN;
-    return hasRelevant ? RELEVANT : defaultAridity;
+    val hasOnlyArid = decisions.equals(ARID_ONLY);
+    val defaultAridity = decisions.contains(RELEVANT) ? RELEVANT : ABSTAIN;
+    return hasOnlyArid ? ARID : defaultAridity;
   }
 }
