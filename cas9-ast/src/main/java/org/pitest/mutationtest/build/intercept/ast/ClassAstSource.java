@@ -2,20 +2,20 @@ package org.pitest.mutationtest.build.intercept.ast;
 
 import static org.pitest.mutationtest.build.intercept.ast.ClassAstSettingsInterceptor.INTERCEPTOR;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.Optional;
 import org.pitest.classinfo.ClassName;
 import org.pitest.mutationtest.engine.MutationDetails;
 
 public interface ClassAstSource {
 
-  Optional<ClassOrInterfaceDeclaration> getAst(ClassName className, String fileName);
+  Optional<TypeDeclaration<?>> getAst(ClassName className, String fileName);
 
-  default Optional<ClassOrInterfaceDeclaration> getAst(String clazz, String fileName) {
+  default Optional<TypeDeclaration<?>> getAst(String clazz, String fileName) {
     return getAst(ClassName.fromString(clazz), fileName);
   }
 
-  default Optional<ClassOrInterfaceDeclaration> getAst(MutationDetails details) {
+  default Optional<TypeDeclaration<?>> getAst(MutationDetails details) {
     return getAst(details.getClassName(), details.getFilename());
   }
 

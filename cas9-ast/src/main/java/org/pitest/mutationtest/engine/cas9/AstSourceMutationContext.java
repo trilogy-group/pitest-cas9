@@ -3,9 +3,9 @@ package org.pitest.mutationtest.engine.cas9;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.CallableDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedParameterDeclaration;
@@ -88,7 +88,7 @@ class AstSourceMutationContext implements MutationContext, MethodAstInfoSource {
   }
 
   private static Optional<CallableDeclaration<?>> findMemberByMethodInfo(
-      final ClassOrInterfaceDeclaration type, final MethodInfo methodInfo) {
+      final TypeDeclaration<?> type, final MethodInfo methodInfo) {
     val paramTypes = Stream.of(Type.getArgumentTypes(methodInfo.getMethodDescriptor()))
         .map(Type::getClassName)
         .toArray(String[]::new);

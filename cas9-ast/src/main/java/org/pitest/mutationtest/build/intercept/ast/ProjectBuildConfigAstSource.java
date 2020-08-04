@@ -5,7 +5,7 @@ import static java.util.Collections.singleton;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ParserConfiguration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ClassLoaderTypeSolver;
@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -25,6 +26,9 @@ import org.pitest.mutationtest.SourceLocator;
 import org.pitest.mutationtest.tooling.SmartSourceLocator;
 
 class ProjectBuildConfigAstSource implements ClassAstSource {
+
+  @SuppressWarnings("unchecked")
+  private Class<TypeDeclaration<?>> TYPE_DECLR_CLASS = (Class<TypeDeclaration<?>>) (Class<?>) TypeDeclaration.class;
 
   private final JavaParser parser;
 
@@ -37,17 +41,18 @@ class ProjectBuildConfigAstSource implements ClassAstSource {
   }
 
   @Override
-  public Optional<ClassOrInterfaceDeclaration> getAst(ClassName className, String fileName) {
+  public Optional<TypeDeclaration<?>> getAst(ClassName className, String fileName) {
     val fullName = className.asJavaName();
     val simpleName = className
         .getNameWithoutPackage()
         .asJavaName();
+    Predicate<TypeDeclaration<?>> hasSimpleName = type -> type.getNameAsString().equals(simpleName);
 
     return locator.locate(singleton(fullName), fileName)
         .map(parser::parse)
         .map(result -> result.getResult()
             .orElseThrow(() -> new ParseProblemException(result.getProblems())))
-        .flatMap(unit -> unit.getClassByName(simpleName));
+        .flatMap(unit -> unit.findFirst(TYPE_DECLR_CLASS, hasSimpleName));
   }
 
   private static JavaParser createParser(@NonNull Collection<File> sourceDirs,
