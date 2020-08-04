@@ -1,5 +1,7 @@
 package org.pitest.mutationtest.build.intercept.ast;
 
+import static com.google.common.collect.Iterables.getLast;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 
 import com.github.javaparser.JavaParser;
@@ -43,9 +45,11 @@ class ProjectBuildConfigAstSource implements ClassAstSource {
   @Override
   public Optional<TypeDeclaration<?>> getAst(ClassName className, String fileName) {
     val fullName = className.asJavaName();
-    val simpleName = className
+    val javaName = className
         .getNameWithoutPackage()
         .asJavaName();
+    val simpleName = javaName.contains("$") ? getLast(asList(javaName.split("\\$"))) : javaName;
+
     Predicate<TypeDeclaration<?>> hasSimpleName = type -> type.getNameAsString().equals(simpleName);
 
     return locator.locate(singleton(fullName), fileName)
