@@ -33,14 +33,14 @@ import org.pitest.mutationtest.arid.NodeAridity;
 class NodeVisitorAridityDetectionVoter extends VoidVisitorWithDefaults<Consumer<NodeAridity>>
     implements AridityDetectionVoter {
 
-  private static final Predicate<Node> IF_STATEMENT = Statement.class::isInstance;
+  private static final Predicate<Node> IS_STATEMENT = Statement.class::isInstance;
 
   private final AridityDetectionVoter voter;
 
   @Override
   public NodeAridity vote(Node node) {
     val expressions = new ArrayList<Node>();
-    node.walk(DIRECT_CHILDREN, IF_STATEMENT.and(expressions::add)::test);
+    node.walk(DIRECT_CHILDREN, IS_STATEMENT.and(expressions::add)::test);
     return expressions.isEmpty() ? voter.vote(node) : arid(expressions);
   }
 
